@@ -1,16 +1,17 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, RouteComponentProps } from 'react-router-dom';
 
 import FormUser from './FormUser';
 import List from './List';
 
-const Users = () => {
+const Users = ({ match }: RouteComponentProps) => {
+  const { path } = match;
 
   return (
     <Switch>
-      <Route exact path="/users" component={List} />
-      <Route path="/users/add" component={FormUser} />
-      <Route path="users/edit/:id" component={FormUser} />
+      <Route exact path={path} component={List} />
+      <Route path={`${path}/add`} component={FormUser} />
+      <Route path={`${path}/edit/:id`} component={FormUser} />
     </Switch>
   );
 }

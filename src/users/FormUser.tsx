@@ -1,29 +1,87 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import { User, UserError } from '../models/user';
+import { userService } from '../services/userService';
+import Field from '../components/Field';
 
-const FormUser = () => {
-  const isAddMode: boolean = false;
+interface RouteParams {
+  id: string;
+}
+
+const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
+  // constants
+  const { id } = match.params;
+  const isAddMode: boolean = !id;
+  const [user, setUser] = useState<User>(new User());
+  const [errors, setErrors] = useState<UserError>(new UserError());
+
+  // submit form
+  const onSubmit = async (event: any) => {
+    event.preventDefault();
+    try {
+      setErrors(new UserError());
+      if (isAddMode) {
+        await userService.createUser(user);
+      } else {
+        await userService.updateUser(id, user);
+      }
+      history.replace('/users');
+    } catch (error) {
+
+    }
+  }
+
+  // fetch user by id
+  useEffect(() => {
+    if (!isAddMode) {
+      userService.getUser(id).then((data: User) => setUser(data))
+    }
+  }, []);
+
+  // handlechane
+  const handleChange = ({ currentTarget }: any) => {
+    const { name, value } = currentTarget;
+    setUser({ ...user, [name]: value });
+  };
 
   return (
-    <form>
-      <h1>{isAddMode ? 'Add User' : 'Edit User'}</h1>
+    <form onSubmit={onSubmit}>
+      <h1>{isAddMode ? 'Nouvel utilisateur' : 'Modification d\'un utilisateur'}</h1>
       <div className="form-row">
         <div className="form-group col-5">
-          <label>Nom</label>
-          <input name="lastname" type="text" className="form-control" />
-          <div className="invalid-feedback"></div>
+          <Field
+            type="text"
+            name="lastname"
+            label="Nom"
+            placeholder="Nom"
+            value={user.lastname}
+            onChange={handleChange}
+            error={errors.lastname}
+          />
         </div>
         <div className="form-group col-5">
-          <label>Prénoms</label>
-          <input name="firstname" type="text" className="form-control" />
-          <div className="invalid-feedback"></div>
+          <Field
+            type="text"
+            name="firstname"
+            label="Prénoms"
+            placeholder="Prénoms"
+            value={user.firstname}
+            onChange={handleChange}
+            error={errors.firstname}
+          />
         </div>
       </div>
       <div className="form-row">
         <div className="form-group col-5">
-          <label>Email</label>
-          <input name="email" type="text" className="form-control" />
-          <div className="invalid-feedback"></div>
+          <Field
+            type="text"
+            name="email"
+            label="Email"
+            placeholder="Email"
+            value={user.email}
+            onChange={handleChange}
+            error={errors.email}
+          />
         </div>
       </div>
       <div className="form-group">

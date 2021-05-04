@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { Field } from '../components';
 import { User, UserError } from '../models/user';
 import { userService } from '../services/userService';
-import Field from '../components/Field';
 
 interface RouteParams {
   id: string;
@@ -36,7 +36,7 @@ const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
     if (!isAddMode) {
       userService.getUser(id).then((data: User) => setUser(data))
     }
-  }, []);
+  }, [id, isAddMode]);
 
   // handlechane
   const handleChange = ({ currentTarget }: any) => {

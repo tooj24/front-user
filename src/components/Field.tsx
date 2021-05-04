@@ -26,4 +26,4 @@ const Field = ({ name, label, value, onChange, type, placeholder, error }: Props
   </div>
 );
 
-export default Field;
+export { Field };

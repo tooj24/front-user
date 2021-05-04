@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { User } from '../models/user';
 import { userService } from '../services/userService';
+import { formatDate } from '../utils/helpers';
 
 const List = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -26,9 +27,22 @@ const List = () => {
     u.email.toLowerCase().includes(search.toLowerCase())
   ))
 
+  // handle delete
+  const handleDelete = async (id: string) => {
+    const data = [...users];
+    setUsers(users.filter(i => i._id !== id));
+
+    try {
+      await userService.deleteUser(id);
+    } catch (error) {
+      console.log(error);
+      setUsers(data);
+    }
+  }
+
   return (
     <div>
-      <h1>Utilisateurs</h1>
+      <h1 className="mb-4">Liste des utilisateurs</h1>
       <div className="row">
         <div className="col-md-6">
           <Link to="/users/add" className="btn btn-sm btn-success mb-2">Ajouter</Link>
@@ -36,7 +50,7 @@ const List = () => {
         <div className="col-md-6">
           <div className="form-group">
             <input
-              type="text"
+              type="search"
               onChange={handleSearch}
               value={search}
               className="form-control form-control-sm"
@@ -45,7 +59,7 @@ const List = () => {
           </div>
         </div>
       </div>
-
+      
       <table className="table table-striped table-sm">
         <thead>
           <tr>
@@ -63,11 +77,11 @@ const List = () => {
               <td>{u.lastname}</td>
               <td>{u.firstname}</td>
               <td>{u.email}</td>
-              <td>{u.createdAt}</td>
-              <td>{u.updatedAt}</td>
+              <td>{formatDate(u.createdAt)}</td>
+              <td>{formatDate(u.updatedAt)}</td>
               <td>
                 <Link to={`/users/edit/${u._id}`} className="btn btn-success btn-sm mr-2">Modifier</Link>
-                <a href="#" className="btn btn-danger btn-sm">Supprimer</a>
+                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(u._id)}>Supprimer</button>
               </td>
             </tr>
           ))}

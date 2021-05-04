@@ -6,7 +6,7 @@ import Home from './home/index';
 
 const App = () => {
   return (
-    <div className="app-container bg-light">
+    <div className="app-container bg-light" style={{minHeight: '100vh'}}>
       <BrowserRouter>
         <Nav />
         {/* <Alert /> */}

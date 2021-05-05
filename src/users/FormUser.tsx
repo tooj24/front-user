@@ -3,6 +3,7 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import { Field } from '../components';
 import { User, UserError } from '../models/user';
 import { userService } from '../services/userService';
+import { valid, isValid } from '../utils/helpers';
 
 interface RouteParams {
   id: string;
@@ -45,12 +46,13 @@ const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
   const handleChange = ({ currentTarget }: any) => {
     const { name, value } = currentTarget;
     setUser({ ...user, [name]: value });
+    setErrors({ ...errors, ...valid(name, value) });
   };
 
   return (
     <>
       <h1 className="mb-4">{isAddMode ? 'Nouvel utilisateur' : 'Modification d\'un utilisateur'}</h1>
-      <form onSubmit={onSubmit} className="col-md-6 m-auto">
+      <form onSubmit={onSubmit} className="col-md-6 m-auto" autoComplete="off">
         <Field
           type="text"
           name="lastname"
@@ -82,11 +84,11 @@ const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
           <button
             type="submit"
             className="btn btn-primary mr-2"
-            disabled={isLoading}
+            disabled={!isValid(user) || isLoading}
           >
             {isLoading && <span className="spinner-border spinner-border-sm mr-1"></span>}
-          Enregistrer
-        </button>
+            Enregistrer
+          </button>
           <Link to={isAddMode ? '.' : '..'} className="btn btn-danger">Annuler</Link>
         </div>
       </form>

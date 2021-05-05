@@ -30,7 +30,18 @@ const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
       }
       setIsLoading(false);
       history.replace('/users');
-    } catch (error) {
+    } catch ({ response }) {
+      const { errors: violations } = response.data;
+
+      if (violations) {
+        const apiErrors: any = {};
+
+        violations.forEach(({ param, msg }: any) => {
+          apiErrors[param] = msg;
+        });
+        setErrors(apiErrors);
+      }
+
       setIsLoading(false);
     }
   }

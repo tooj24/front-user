@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ConfirmDelete } from '../components';
 import { User } from '../models/user';
 import { userService } from '../services/userService';
 import { formatDate } from '../utils/helpers';
 
 const List = () => {
+  const [userId, setUserId] = useState<string>('');
   const [users, setUsers] = useState<User[]>([]);
   const [search, setSearch] = useState<string>('');
 
@@ -81,12 +83,13 @@ const List = () => {
               <td>{formatDate(u.updatedAt)}</td>
               <td>
                 <Link to={`/users/edit/${u._id}`} className="btn btn-success btn-sm mr-2">Modifier</Link>
-                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(u._id)}>Supprimer</button>
+                <button className="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal" onClick={() => setUserId(u._id)}>Supprimer</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <ConfirmDelete onClick={() => handleDelete(userId)} />
     </div>
   );
 }

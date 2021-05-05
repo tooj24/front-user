@@ -13,13 +13,11 @@ const List = () => {
 
   // fetch users
   useEffect(() => {
-    try {
-      userService.getUsers().then(data => {
-        setUsers(data);
-      });
-    } catch (error) {
+    userService.getUsers().then(data => {
+      setUsers(data);
+    }, () => {
       toast.error("Impossible de charger les utilisateurs");
-    }
+    });
   }, [])
 
   // handle search

@@ -52,13 +52,12 @@ const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
 
   // fetch user by id
   useEffect(() => {
-    try {
-      if (!isAddMode) {
-        userService.getUser(id).then((data: User) => setUser(data))
-      }
-    } catch (error) {
-      toast.error("L'utilisateur n'a pas pu être chargé");
-      history.replace("/users");
+    if (!isAddMode) {
+      userService.getUser(id).then(data => {
+        setUser(data)
+      }, () => {
+        toast.error("L'utilisateur n'a pas pu être chargé");
+      })
     }
   }, [id, isAddMode, history]);
 

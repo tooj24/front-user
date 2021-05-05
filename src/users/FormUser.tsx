@@ -4,6 +4,7 @@ import { Field } from '../components';
 import { User, UserError } from '../models/user';
 import { userService } from '../services/userService';
 import { valid, isValid } from '../utils/helpers';
+import { toast } from 'react-toastify';
 
 interface RouteParams {
   id: string;
@@ -25,8 +26,10 @@ const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
       setErrors(new UserError());
       if (isAddMode) {
         await userService.createUser(user);
+        toast.success("L'utilisateur a bien été créé");
       } else {
         await userService.updateUser(id, user);
+        toast.success("L'utilisateur a bien été modifié");
       }
       setIsLoading(false);
       history.replace('/users');
@@ -40,6 +43,7 @@ const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
           apiErrors[param] = msg;
         });
         setErrors(apiErrors);
+        toast.error("Des erreurs dans votre formulaire !");
       }
 
       setIsLoading(false);
@@ -48,10 +52,15 @@ const FormUser = ({ match, history }: RouteComponentProps<RouteParams>) => {
 
   // fetch user by id
   useEffect(() => {
-    if (!isAddMode) {
-      userService.getUser(id).then((data: User) => setUser(data))
+    try {
+      if (!isAddMode) {
+        userService.getUser(id).then((data: User) => setUser(data))
+      }
+    } catch (error) {
+      toast.error("L'utilisateur n'a pas pu être chargé");
+      history.replace("/users");
     }
-  }, [id, isAddMode]);
+  }, [id, isAddMode, history]);
 
   // handlechane
   const handleChange = ({ currentTarget }: any) => {

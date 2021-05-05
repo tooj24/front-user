@@ -4,6 +4,7 @@ import { ConfirmDelete } from '../components';
 import { User } from '../models/user';
 import { userService } from '../services/userService';
 import { formatDate } from '../utils/helpers';
+import { toast } from 'react-toastify';
 
 const List = () => {
   const [userId, setUserId] = useState<string>('');
@@ -12,9 +13,13 @@ const List = () => {
 
   // fetch users
   useEffect(() => {
-    userService.getUsers().then(data => {
-      setUsers(data);
-    });
+    try {
+      userService.getUsers().then(data => {
+        setUsers(data);
+      });
+    } catch (error) {
+      toast.error("Impossible de charger les utilisateurs");
+    }
   }, [])
 
   // handle search
@@ -36,9 +41,10 @@ const List = () => {
 
     try {
       await userService.deleteUser(id);
+      toast.success("L'utilisateur a bien été supprimé");
     } catch (error) {
-      console.log(error);
       setUsers(data);
+      toast.error("La suppression n'a pas pu fonctionner");
     }
   }
 
@@ -61,7 +67,7 @@ const List = () => {
           </div>
         </div>
       </div>
-      
+
       <table className="table table-striped table-sm">
         <thead>
           <tr>

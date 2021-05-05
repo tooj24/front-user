@@ -3,10 +3,12 @@ import { Nav } from './components';
 import Users from './users';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import Home from './home/index';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <div className="app-container bg-light" style={{minHeight: '100vh'}}>
+    <div className="app-container bg-light" style={{ minHeight: '100vh' }}>
       <BrowserRouter>
         <Nav />
         {/* <Alert /> */}
@@ -17,6 +19,8 @@ const App = () => {
           </Switch>
         </div>
       </BrowserRouter>
+
+      <ToastContainer position={toast.POSITION.TOP_RIGHT} />
     </div>
   );
 };
